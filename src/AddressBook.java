@@ -17,12 +17,15 @@ public class AddressBook {
     }
 
     public static void guardar(String telefono, String nombre,  HashMap<String, String> contacto) throws IOException {
+        //Verifica si el telefono se repite o no en dado caso que no se repita hara el push
         if (contacto.containsKey(telefono)){
             System.out.println("No se puede introducir el contato. El numero de telfono esta repetido\n");
         }else{
             contacto.put(telefono,  " " + nombre);
             System.out.println();
         }
+        //crea el archivo si no existe, en dado caso de existir solo pondra los datos que no tengan el
+        //telefono repetido
         File Contactos =new File("Contactos.txt");
         FileOutputStream fos=new FileOutputStream(Contactos);
         ObjectOutputStream oos=new ObjectOutputStream(fos);
@@ -36,6 +39,7 @@ public class AddressBook {
 
     public static void mostarContacto(HashMap<String, String> contacto)  {
         try{
+            //busca todos los datos del txt y los muestra
             File Contactos = new File("Contactos.txt");
             FileInputStream fis = new FileInputStream(Contactos);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -54,12 +58,14 @@ public class AddressBook {
     }
 
     public static void eliminarContacto(String telefono, HashMap<String, String> contacto) throws IOException {
+        //Verifica que el numero exista y en dado caso de existir elimina el numero
         if (contacto.containsKey(telefono)){
             contacto.remove(telefono);
             System.out.println("Se ha eliminado con exito el usuario.\n");
         }else{
             System.out.println("No existe el contacto.\n");
         }
+        //se hace una actualizacion al archivo txt
         File Contactos =new File("Contactos.txt");
         FileOutputStream fos=new FileOutputStream(Contactos);
         ObjectOutputStream oos=new ObjectOutputStream(fos);
