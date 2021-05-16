@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-// hay que convertir esto a un arcivo txt y que lo lea
 public class AddressBook {
     static Scanner scanner = new Scanner(System.in);
     static int select = -1;
