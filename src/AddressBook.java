@@ -1,45 +1,75 @@
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
+
 // hay que convertir esto a un arcivo txt y que lo lea
 public class AddressBook {
     static Scanner scanner = new Scanner(System.in);
     static int select = -1;
     static String Nombre;
-    static int telefono;
+    static String telefono;
 
-    private HashMap<Integer,String> contacto = new HashMap<Integer, String>();
 
-    public static void guardar(int telefono, String nombre, HashMap<Integer, String> contacto){
+    static HashMap<String,String> contacto;
+    public AddressBook() throws IOException {
+        contacto = new HashMap<String, String>();
+        guardar(telefono, Nombre, contacto);
+        mostarContacto(contacto);
+    }
+
+    public static void guardar(String telefono, String nombre,  HashMap<String, String> contacto) throws IOException {
         if (contacto.containsKey(telefono)){
-            System.out.println("No se puede introducir el contacto. El numero de telfono esta repetido\n");
+            System.out.println("No se puede introducir el contato. El numero de telfono esta repetido\n");
         }else{
             contacto.put(telefono,  " " + nombre);
             System.out.println();
         }
+        File Contactos =new File("Contactos.txt");
+        FileOutputStream fos=new FileOutputStream(Contactos);
+        ObjectOutputStream oos=new ObjectOutputStream(fos);
+        oos.writeObject(contacto);
+        oos.flush();
+        oos.close();
+        fos.close();
+
+
     }
 
-    public static void mostarContacto(HashMap<Integer,String> contacto){
-        Integer clave;
-        Iterator<Integer> Contacto = contacto.keySet().iterator();
-        System.out.println("Contactos: ");
-        while (Contacto.hasNext()){
-            clave = Contacto.next();
-            System.out.print("{ "+ clave + " }" +":" + "{" + contacto.get(clave) + " }");
-            System.out.println("\n");
+    public static void mostarContacto(HashMap<String, String> contacto)  {
+        try{
+            File Contactos = new File("Contactos.txt");
+            FileInputStream fis = new FileInputStream(Contactos);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            contacto = (HashMap<String, String>) ois.readObject();
+
+            ois.close();
+            fis.close();
+            for(Map.Entry<String,String> m :contacto.entrySet()){
+                System.out.println(m.getKey()+" : "+m.getValue());
+            }
+        }catch (Exception e){
+
         }
+
     }
 
-    public static void eliminarContacto(int telefono, HashMap<Integer,String> contacto){
+    public static void eliminarContacto(String telefono, HashMap<String, String> contacto) throws IOException {
         if (contacto.containsKey(telefono)){
             contacto.remove(telefono);
             System.out.println("Se ha eliminado con exito el usuario.\n");
         }else{
             System.out.println("No existe el contacto.\n");
         }
+        File Contactos =new File("Contactos.txt");
+        FileOutputStream fos=new FileOutputStream(Contactos);
+        ObjectOutputStream oos=new ObjectOutputStream(fos);
+        oos.writeObject(contacto);
+        oos.flush();
+        oos.close();
+        fos.close();
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
         AddressBook addressBook = new AddressBook();
 
         //Mientras la opción elegida sea 0, se termina el programa
@@ -56,15 +86,15 @@ public class AddressBook {
                         System.out.println("Dame el nombre:");
                         Nombre = scanner.nextLine();
                         System.out.println("Dame el telefono:");
-                        telefono = scanner.nextInt();
-                        guardar(telefono, Nombre, addressBook.contacto);
+                        telefono = scanner.nextLine();
+                        guardar(telefono,Nombre, addressBook.contacto);
                         break;
                     case 2:
                         mostarContacto(addressBook.contacto);
                         break;
                     case 3:
                         System.out.print("introduzca el numero de telefono: ");
-                        telefono = scanner.nextInt();
+                        telefono = scanner.nextLine();
                         eliminarContacto(telefono, addressBook.contacto);
                         break;
                     case 0:
